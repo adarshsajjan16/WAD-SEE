@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration - HealthCare+</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="justify-content: center; align-items: center; padding: 2rem 0;">
+
+    <div style="width: 100%; max-width: 660px; padding: 1.5rem;">
+        
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <a href="/index.html" class="brand-logo" style="justify-content: center; margin-bottom: 0.75rem;">
+                <div class="brand-icon">✨</div>
+                <div><span class="gradient-text">HealthCare+</span> Patient Portal</div>
+            </a>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Create a secure patient account to schedule medical consultations</p>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.35rem; text-align: center;">Patient Registration</h2>
+
+            <form id="registerForm">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="full_name">Full Name *</label>
+                        <input type="text" id="full_name" class="form-control" placeholder="e.g. Jane Doe" required pattern="[A-Za-z\s]+" title="Only alphabets and spaces allowed">
+                        <div id="nameHint" class="input-hint">Only alphabets and spaces allowed</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address *</label>
+                        <input type="email" id="email" class="form-control" placeholder="jane@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Mobile Phone (10 Digits) *</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="9876543210" maxlength="10" required pattern="\d{10}" title="Must be exactly 10 numeric digits">
+                        <div id="phoneHint" class="input-hint">Must be exactly 10 digits</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="date_of_birth">Date of Birth</label>
+                        <input type="date" id="date_of_birth" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password *</label>
+                        <input type="password" id="password" class="form-control" placeholder="Min. 6 characters" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="Repeat password" required minlength="6">
+                        <div id="passMatchHint" class="input-hint"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="gender">Gender Identity</label>
+                        <select id="gender" class="form-control">
+                            <option value="">-- Select --</option>
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Non-Binary">Non-Binary</option>
+                            <option value="Prefer Not to Say">Prefer Not to Say</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="emergency_contact">Emergency Contact (10 Digits or Name)</label>
+                        <input type="text" id="emergency_contact" class="form-control" placeholder="e.g. 9876543210">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="address">Residential Address</label>
+                    <textarea id="address" class="form-control" rows="2" placeholder="Street address, City, State"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.85rem;">
+                    Complete Patient Registration
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+                Already registered? <a href="/login.html" style="color: var(--primary); font-weight: 700; text-decoration: none;">Sign In Here</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="/index.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.85rem;">← Back to Home Page</a>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

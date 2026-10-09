@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Specialists Directory - St. Jude Health</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html" class="brand-logo">
+                <div class="brand-icon">🏥</div>
+                <div>St. Jude <span style="color: var(--primary);">Health</span></div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/index.html" class="nav-link">Home</a></li>
+                <li><a href="/doctors.html" class="nav-link active">Medical Specialists</a></li>
+                <li><a href="/login.html" class="btn btn-secondary btn-sm">Patient Portal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-wrapper">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Medical Specialists & Departments</h1>
+                <p class="page-subtitle">Browse board-certified doctors, consultation hours, and department specializations.</p>
+            </div>
+            <a href="/registration.html" class="btn btn-primary">Book Consultation</a>
+        </div>
+
+        <div id="doctorsGrid" class="grid grid-cols-3">
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                Loading medical specialists catalog...
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const data = await apiCall('/api/doctors');
+                const grid = document.getElementById('doctorsGrid');
+                
+                if (data.doctors.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center;">No doctors currently listed.</div>';
+                    return;
+                }
+
+                grid.innerHTML = data.doctors.map(doc => `
+                    <div class="card">
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <div style="width: 50px; height: 50px; border-radius: var(--radius-md); background: rgba(37, 99, 235, 0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800;">
+                                👨‍⚕️
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.15rem;">${escapeHtml(doc.full_name)}</h3>
+                                <div style="color: var(--accent); font-weight: 600; font-size: 0.85rem;">${escapeHtml(doc.specialization)}</div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            <div><strong>Department:</strong> ${escapeHtml(doc.department)}</div>
+                            <div><strong>Available:</strong> ${escapeHtml(doc.available_days.join(', '))}</div>
+                            <div><strong>Consultation Hours:</strong> ${formatTime(doc.consultation_start)} - ${formatTime(doc.consultation_end)}</div>
+                        </div>
+
+                        <a href="/login.html" class="btn btn-secondary btn-sm" style="width: 100%;">Book Consultation Slot</a>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                showToast('Failed to load specialists directory.', 'danger');
+            }
+        });
+    </script>
+</body>
+</html>

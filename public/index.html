@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare+ | Next-Gen Hospital Management System</title>
+    <meta name="description" content="Next-generation healthcare management portal for patient consultations, specialist schedules, and clinical administration.">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html" class="brand-logo">
+                <div class="brand-icon">✨</div>
+                <div><span class="gradient-text">HealthCare+</span></div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/index.html" class="nav-link active">Home</a></li>
+                <li><a href="/doctors.html" class="nav-link">Medical Specialists</a></li>
+                <li><a href="/login.html" class="btn btn-secondary btn-sm">Patient Portal</a></li>
+                <li><a href="/login.html" class="btn btn-purple btn-sm">⚡ Admin Portal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        
+        <!-- Emergency Notice Banner -->
+        <div class="alert-banner">
+            🚑 <strong>24/7 Emergency Response Active:</strong> For critical medical emergencies, please dial 911 or report to the nearest Trauma Unit immediately.
+        </div>
+
+        <!-- Ultra-Cool Hero Section -->
+        <section class="card" style="padding: 3.5rem 2.5rem; background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(23, 32, 54, 0.9)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80') center/cover; margin-bottom: 2.5rem; position: relative; border-color: rgba(59, 130, 246, 0.3);">
+            <div style="max-width: 680px;">
+                <span class="badge badge-active" style="margin-bottom: 1.25rem;">✨ Next-Generation Healthcare Infrastructure</span>
+                <h1 style="font-size: 3rem; margin-bottom: 1.2rem; color: #ffffff; line-height: 1.15;">
+                    Empowering Patient Care with <span class="gradient-text">Precision & Speed</span>
+                </h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2.25rem;">
+                    Schedule consultations with top-tier medical specialists, manage digital health records, and track real-time clinical appointment availability effortlessly.
+                </p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="/registration.html" class="btn btn-primary" style="padding: 0.85rem 1.8rem;">Register as Patient</a>
+                    <a href="/login.html" class="btn btn-secondary" style="padding: 0.85rem 1.8rem;">Patient Sign In</a>
+                    <a href="/login.html" class="btn btn-purple" style="padding: 0.85rem 1.8rem;">⚡ 1-Click Demo Admin</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Cards Grid -->
+        <section class="grid grid-cols-3" style="margin-bottom: 2.5rem;">
+            <div class="card">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">👨‍⚕️</div>
+                <h3>Board-Certified Specialists</h3>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
+                    Access top doctors across Cardiology, Orthopedics, Pediatrics, and specialized care with instant consultation slot lookups.
+                </p>
+            </div>
+            <div class="card">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
+                <h3>Real-Time Slot Engine</h3>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
+                    Select specific dates and calculate available time slots dynamically with automated server-side conflict defense.
+                </p>
+            </div>
+            <div class="card">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔒</div>
+                <h3>Enterprise Data & CSV Center</h3>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 0.5rem;">
+                    Protected by bcrypt hashing, rate limiting, role authorization, and 1-click CSV export center for administrators.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: rgba(11, 15, 25, 0.95); border-top: 1px solid var(--border-color); padding: 1.5rem 2rem; text-align: center; color: var(--text-dim); font-size: 0.88rem; margin-top: 3rem;">
+        &copy; 2026 HealthCare+ Hospital System. All rights reserved. Secure Local & Serverless Infrastructure.
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

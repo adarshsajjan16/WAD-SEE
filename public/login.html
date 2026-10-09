@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - HealthCare+ Hospital System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="justify-content: center; align-items: center;">
+
+    <div style="width: 100%; max-width: 460px; padding: 1.5rem;">
+        
+        <div style="text-align: center; margin-bottom: 1.75rem;">
+            <a href="/index.html" class="brand-logo" style="justify-content: center; margin-bottom: 0.75rem;">
+                <div class="brand-icon">✨</div>
+                <div><span class="gradient-text">HealthCare+</span> Management</div>
+            </a>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Secure Medical & Administrative Access Portal</p>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.35rem; text-align: center;">Account Login</h2>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.85rem;">
+                    Sign In to Portal
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+                Don't have a patient account? <a href="/registration.html" style="color: var(--primary); font-weight: 700; text-decoration: none;">Register Patient Account</a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="/index.html" style="color: var(--text-dim); text-decoration: none; font-size: 0.85rem;">← Back to Home Page</a>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

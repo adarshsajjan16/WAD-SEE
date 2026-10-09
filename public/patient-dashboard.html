@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal - St. Jude Health</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/patient-dashboard.html" class="brand-logo">
+                <div class="brand-icon">🏥</div>
+                <div>St. Jude <span style="color: var(--primary);">Patient Portal</span></div>
+            </a>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="user-badge">
+                    <div class="user-avatar">👤</div>
+                    <span id="userNameDisplay" style="font-weight: 600; font-size: 0.9rem;">Patient</span>
+                </div>
+                <button type="button" data-action="logout" class="btn btn-secondary btn-sm">Log Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="main-wrapper">
+        
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Welcome to Your Health Portal</h1>
+                <p class="page-subtitle">View your patient number, manage appointments, and update contact details.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+                <button id="editProfileBtn" class="btn btn-secondary">✏️ Edit Profile</button>
+                <button id="newApptBtn" class="btn btn-primary">🗓️ Book Appointment</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Row -->
+        <section class="grid grid-cols-3" style="margin-bottom: 2rem;">
+            
+            <div class="card stat-card" style="--stat-color: var(--primary);">
+                <div>
+                    <div class="stat-label">Patient Record ID</div>
+                    <div class="stat-val" id="patientNumberBadge" style="font-size: 1.6rem;">PAT-00000</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Official Identifier</div>
+                </div>
+                <div class="stat-icon">🆔</div>
+            </div>
+
+            <div class="card stat-card" style="--stat-color: var(--accent);">
+                <div>
+                    <div class="stat-label">Total Appointments</div>
+                    <div class="stat-val" id="statTotalBookings">0</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">All Historical Consultations</div>
+                </div>
+                <div class="stat-icon">📑</div>
+            </div>
+
+            <div class="card stat-card" style="--stat-color: var(--success);">
+                <div>
+                    <div class="stat-label">Active / Upcoming</div>
+                    <div class="stat-val" id="statUpcomingVisits">0</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">Pending or Confirmed</div>
+                </div>
+                <div class="stat-icon">🩺</div>
+            </div>
+
+        </section>
+
+        <!-- Profile Details Card -->
+        <section class="card" style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                📋 Personal Profile Summary
+            </h3>
+            <div class="grid grid-cols-3">
+                <div>
+                    <div style="color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase;">Contact Phone</div>
+                    <div id="patientPhone" style="font-weight: 600; margin-top: 0.2rem;">-</div>
+                </div>
+                <div>
+                    <div style="color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase;">Address</div>
+                    <div id="patientAddress" style="font-weight: 600; margin-top: 0.2rem;">-</div>
+                </div>
+                <div>
+                    <div style="color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase;">Account Status</div>
+                    <div><span class="badge badge-active">Active Patient</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patient Appointments Table -->
+        <section class="card">
+            <h3 style="margin-bottom: 1.25rem;">📅 Your Scheduled Appointments</h3>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Appt #</th>
+                            <th>Specialist Doctor</th>
+                            <th>Date</th>
+                            <th>Time Slot</th>
+                            <th>Reason for Visit</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientAppointmentsTbody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                Loading your appointments...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: Book Appointment -->
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">🗓️ Schedule Consultation</h3>
+                <button class="modal-close" onclick="closeModal('bookingModal')">&times;</button>
+            </div>
+            <form id="bookingForm">
+                <div class="modal-body">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="bookingDoctor">Select Medical Specialist *</label>
+                        <select id="bookingDoctor" class="form-control" required>
+                            <option value="">-- Loading Doctors --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bookingDate">Appointment Date *</label>
+                        <input type="date" id="bookingDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Available Time Slot *</label>
+                        <div id="slotContainer">
+                            <div style="color: var(--text-muted); font-size: 0.85rem;">
+                                Select a doctor and date to pick a time slot.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bookingReason">Reason for Visit / Symptoms *</label>
+                        <textarea id="bookingReason" class="form-control" rows="3" placeholder="Describe symptoms or routine checkup reason..." required></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('bookingModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Confirm Booking Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Profile -->
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Update Profile Details</h3>
+                <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <form id="profileForm">
+                <div class="modal-body">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="editPhone">Phone Number</label>
+                            <input type="tel" id="editPhone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editDob">Date of Birth</label>
+                            <input type="date" id="editDob" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="editGender">Gender</label>
+                            <select id="editGender" class="form-control">
+                                <option value="">-- Select --</option>
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Non-Binary">Non-Binary</option>
+                                <option value="Prefer Not to Say">Prefer Not to Say</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="editEmergency">Emergency Contact</label>
+                            <input type="text" id="editEmergency" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="editAddress">Address</label>
+                        <textarea id="editAddress" class="form-control" rows="2"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('profileModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/patient.js"></script>
+</body>
+</html>

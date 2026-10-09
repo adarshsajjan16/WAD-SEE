@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+exports/
+logs/
+*.log
+temp/
+scratch/
+.DS_Store

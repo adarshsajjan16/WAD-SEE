@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center - HealthCare+</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- Admin Header Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/admin-dashboard.html" class="brand-logo">
+                <div class="brand-icon">✨</div>
+                <div><span class="gradient-text">HealthCare+</span> Admin Center</div>
+            </a>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="user-badge" style="border-color: rgba(139, 92, 246, 0.5);">
+                    <div class="user-avatar" style="background: var(--purple-gradient);">👑</div>
+                    <span id="adminNameDisplay" style="font-weight: 700; font-size: 0.9rem;">Administrator</span>
+                </div>
+                <button type="button" data-action="logout" class="btn btn-secondary btn-sm">Sign Out</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="main-wrapper">
+
+        <!-- Demo Password Warning Banner -->
+        <div id="demoPasswordWarning" class="alert-banner" style="display: none; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.12); color: #f87171;">
+            <div>⚠️ <strong>Security Notice:</strong> The default administrator password is active. Change it before production deployment.</div>
+            <button class="btn btn-danger btn-sm" onclick="openModal('changeAdminPassModal')" style="margin-left: auto; white-space: nowrap;">Change Admin Password</button>
+        </div>
+        
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Hospital Administration Center</h1>
+                <p class="page-subtitle">Full master control over patients, medical specialists, appointment desk, security audit logs, and CSV data export.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-accent btn-sm" onclick="downloadCsv('patients')">📥 CSV Patients</button>
+                <button class="btn btn-accent btn-sm" onclick="downloadCsv('appointments')">📥 CSV Appts</button>
+                <button class="btn btn-accent btn-sm" onclick="downloadCsv('doctors')">📥 CSV Doctors</button>
+                <button class="btn btn-accent btn-sm" onclick="downloadCsv('activity-logs')">📥 CSV Audit</button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="tabOverview">📊 Metrics & Overview</button>
+            <button class="tab-btn" data-tab="tabPatients">👥 Patients Directory & Full Control</button>
+            <button class="tab-btn" data-tab="tabDoctors">🩺 Medical Specialists Roster</button>
+            <button class="tab-btn" data-tab="tabAppointments">📅 Master Appointment Desk</button>
+            <button class="tab-btn" data-tab="tabLogs">🛡️ Security & Audit Logs</button>
+        </div>
+
+        <!-- TAB 1: OVERVIEW METRICS -->
+        <div id="tabOverview" class="tab-content active">
+            <div class="grid grid-cols-4" style="margin-bottom: 2rem;">
+                <div class="card stat-card" style="--stat-color: var(--primary);">
+                    <div>
+                        <div class="stat-label">Registered Patients</div>
+                        <div class="stat-val" id="statTotalPatients">0</div>
+                    </div>
+                    <div class="stat-icon">👥</div>
+                </div>
+
+                <div class="card stat-card" style="--stat-color: var(--success);">
+                    <div>
+                        <div class="stat-label">Active Accounts</div>
+                        <div class="stat-val" id="statActivePatients">0</div>
+                    </div>
+                    <div class="stat-icon">✅</div>
+                </div>
+
+                <div class="card stat-card" style="--stat-color: var(--accent);">
+                    <div>
+                        <div class="stat-label">Specialists</div>
+                        <div class="stat-val" id="statTotalDoctors">0</div>
+                    </div>
+                    <div class="stat-icon">🩺</div>
+                </div>
+
+                <div class="card stat-card" style="--stat-color: var(--warning);">
+                    <div>
+                        <div class="stat-label">Pending Requests</div>
+                        <div class="stat-val" id="statPendingAppts">0</div>
+                    </div>
+                    <div class="stat-icon">⏳</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3" style="margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="stat-label">Confirmed Appointments</div>
+                    <div class="stat-val" id="statConfirmedAppts" style="color: var(--success);">0</div>
+                </div>
+                <div class="card">
+                    <div class="stat-label">Completed Consultations</div>
+                    <div class="stat-val" id="statCompletedAppts" style="color: var(--purple);">0</div>
+                </div>
+                <div class="card">
+                    <div class="stat-label">Cancelled / Rejected</div>
+                    <div class="stat-val" id="statCancelledAppts" style="color: var(--danger);">0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">⚡ System Activity Audit Trail</h3>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Actor User</th>
+                                <th>Action Event</th>
+                                <th>Target Entity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentActivityTbody">
+                            <tr><td colspan="4" style="text-align: center;">Loading activity audit...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PATIENTS DIRECTORY -->
+        <div id="tabPatients" class="tab-content">
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="toolbar" style="justify-content: space-between;">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="adminPatientSearch" class="form-control" placeholder="Search by name, email, 10-digit phone, or PAT-number...">
+                    </div>
+                    <button class="btn btn-accent btn-sm" onclick="downloadCsv('patients')">📥 Export Patients CSV</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Patient #</th>
+                                <th>Full Name & Email</th>
+                                <th>Phone (10 Digits)</th>
+                                <th>Registration Date</th>
+                                <th>Status</th>
+                                <th>Admin Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientsTableTbody">
+                            <tr><td colspan="6" style="text-align:center;">Loading patient directory...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: MEDICAL SPECIALISTS (DOCTORS) -->
+        <div id="tabDoctors" class="tab-content">
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="toolbar" style="justify-content: space-between;">
+                    <h3>Medical Specialists Roster</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-accent btn-sm" onclick="downloadCsv('doctors')">📥 Export Doctors CSV</button>
+                        <button class="btn btn-primary btn-sm" onclick="openModal('addDoctorModal')">➕ Add New Specialist</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Doctor Name & Department</th>
+                                <th>Specialization</th>
+                                <th>Schedule & Hours</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorsTableTbody">
+                            <tr><td colspan="6" style="text-align:center;">Loading specialists roster...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: MASTER APPOINTMENT DESK -->
+        <div id="tabAppointments" class="tab-content">
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="toolbar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="adminApptSearch" class="form-control" placeholder="Search by patient, doctor, or visit reason...">
+                    </div>
+                    <select id="adminApptStatusFilter" class="form-control" style="max-width: 200px;">
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <button class="btn btn-accent btn-sm" onclick="downloadCsv('appointments')">📥 Export Appts CSV</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Appt #</th>
+                                <th>Patient</th>
+                                <th>Specialist Doctor</th>
+                                <th>Date & Time</th>
+                                <th>Reason for Visit</th>
+                                <th>Status</th>
+                                <th>Admin Notes</th>
+                                <th>Management Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminApptsTableTbody">
+                            <tr><td colspan="8" style="text-align:center;">Loading master appointments desk...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: AUDIT LOGS -->
+        <div id="tabLogs" class="tab-content">
+            <div class="card">
+                <div class="toolbar" style="justify-content: space-between;">
+                    <h3>Security Audit & Action Logs</h3>
+                    <button class="btn btn-accent btn-sm" onclick="downloadCsv('activity-logs')">📥 Export Audit Logs CSV</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Timestamp</th>
+                                <th>Actor User</th>
+                                <th>Action Event</th>
+                                <th>Entity</th>
+                                <th>Metadata Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityLogsTbody">
+                            <tr><td colspan="6" style="text-align:center;">Loading activity logs...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal: Add New Doctor -->
+    <div id="addDoctorModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">➕ Add Medical Specialist</h3>
+                <button class="modal-close" onclick="closeModal('addDoctorModal')">&times;</button>
+            </div>
+            <form id="addDoctorForm">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="docName">Full Name *</label>
+                            <input type="text" id="docName" class="form-control" placeholder="Dr. Jane Smith" required pattern="[A-Za-z\s.]+">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="docSpec">Specialization *</label>
+                            <input type="text" id="docSpec" class="form-control" placeholder="e.g. Cardiology" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="docDept">Department *</label>
+                            <input type="text" id="docDept" class="form-control" placeholder="e.g. Cardiovascular Care" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="docDuration">Slot Duration (Mins) *</label>
+                            <input type="number" id="docDuration" class="form-control" value="30" min="15" max="120" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="docStart">Consultation Start *</label>
+                            <input type="time" id="docStart" class="form-control" value="09:00" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="docEnd">Consultation End *</label>
+                            <input type="time" id="docEnd" class="form-control" value="17:00" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Available Consultation Days *</label>
+                        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                            <label style="font-size: 0.85rem;"><input type="checkbox" name="docDays" value="Monday" checked> Mon</label>
+                            <label style="font-size: 0.85rem;"><input type="checkbox" name="docDays" value="Tuesday" checked> Tue</label>
+                            <label style="font-size: 0.85rem;"><input type="checkbox" name="docDays" value="Wednesday" checked> Wed</label>
+                            <label style="font-size: 0.85rem;"><input type="checkbox" name="docDays" value="Thursday" checked> Thu</label>
+                            <label style="font-size: 0.85rem;"><input type="checkbox" name="docDays" value="Friday" checked> Fri</label>
+                            <label style="font-size: 0.85rem;"><input type="checkbox" name="docDays" value="Saturday"> Sat</label>
+                            <label style="font-size: 0.85rem;"><input type="checkbox" name="docDays" value="Sunday"> Sun</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addDoctorModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Specialist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Full Master Admin Patient Editor -->
+    <div id="adminEditPatientModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Full Admin Control - Edit Patient Profile</h3>
+                <button class="modal-close" onclick="closeModal('adminEditPatientModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editPatientId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="editPatientName" class="form-control" required pattern="[A-Za-z\s]+" placeholder="Letters only">
+                        <div id="adminNameHint" class="input-hint">Alphabets & spaces only</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" id="editPatientEmail" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Mobile Phone (10 Digits) *</label>
+                        <input type="tel" id="editPatientPhone" class="form-control" maxlength="10" required pattern="\d{10}">
+                        <div id="adminPhoneHint" class="input-hint">Must be 10 digits</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Account Access Status *</label>
+                        <select id="editPatientStatus" class="form-control">
+                            <option value="active">Active (Can log in & book)</option>
+                            <option value="disabled">Disabled (Blocked from login)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" id="editPatientDob" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender Identity</label>
+                        <select id="editPatientGender" class="form-control">
+                            <option value="">-- Select --</option>
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Non-Binary">Non-Binary</option>
+                            <option value="Prefer Not to Say">Prefer Not to Say</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Emergency Contact (10 Digits or Name)</label>
+                    <input type="text" id="editPatientEmergency" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Residential Address</label>
+                    <textarea id="editPatientAddress" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('adminEditPatientModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveAdminPatientEdit()">Save Patient Details</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Reschedule Appointment -->
+    <div id="rescheduleModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">🗓️ Reschedule Appointment</h3>
+                <button class="modal-close" onclick="closeModal('rescheduleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rescheduleApptId">
+                <input type="hidden" id="rescheduleDoctorId">
+
+                <div class="form-group">
+                    <label class="form-label">Select Target Date</label>
+                    <input type="date" id="rescheduleDate" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Available Time Slots</label>
+                    <div id="rescheduleSlotContainer">
+                        <div style="color:var(--text-muted); font-size:0.85rem;">Pick a date to calculate slots.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('rescheduleModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveReschedule()">Confirm Reschedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Admin Notes -->
+    <div id="adminNotesModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">📝 Edit Administrative Notes</h3>
+                <button class="modal-close" onclick="closeModal('adminNotesModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="notesApptId">
+                <div class="form-group">
+                    <label class="form-label">Administrative & Clinical Notes</label>
+                    <textarea id="adminNotesInput" class="form-control" rows="4" placeholder="Enter notes..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('adminNotesModal')">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveAdminNotes()">Save Notes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Change Admin Password -->
+    <div id="changeAdminPassModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">🔒 Change Administrator Password</h3>
+                <button class="modal-close" onclick="closeModal('changeAdminPassModal')">&times;</button>
+            </div>
+            <form id="changeAdminPassForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="currentAdminPass">Current Password *</label>
+                        <input type="password" id="currentAdminPass" class="form-control" placeholder="Current password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="newAdminPass">New Password *</label>
+                        <input type="password" id="newAdminPass" class="form-control" placeholder="New password (min 6 chars)" required minlength="6">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('changeAdminPassModal')">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Update Admin Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

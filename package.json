@@ -1,0 +1,29 @@
+{
+  "name": "hospital-management-system",
+  "version": "1.0.0",
+  "description": "Enterprise-grade Hospital Management System built with Node.js, Express, SQLite, and vanilla modern CSS/JS",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js",
+    "test": "node tests/test.js"
+  },
+  "keywords": [
+    "hospital",
+    "management",
+    "healthcare",
+    "sqlite",
+    "express"
+  ],
+  "author": "Antigravity Systems",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0"
+  },
+  "devDependencies": {}
+}
